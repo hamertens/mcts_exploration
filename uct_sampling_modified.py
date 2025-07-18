@@ -12,7 +12,7 @@ import argparse
 warnings.filterwarnings("ignore", category=ConvergenceWarning)
 
 parser = argparse.ArgumentParser(description='UCT-based GP sampling script')
-parser.add_argument('--uct_horizon', type=int, default=15, help='Rollout horizon for UCT')
+parser.add_argument('--uct_horizon', type=int, default=10, help='Rollout horizon for UCT')
 parser.add_argument('--uct_simulations', type=int, default=2000, help='Number of simulations for UCT')
 args = parser.parse_args()
 
@@ -104,7 +104,7 @@ class Node:
         # Untried actions available from this state.
         self.untried_actions = get_allowed_actions(state, grid_size, self.visited).copy()
 
-def best_child(node, c_param=1.41):
+def best_child(node, c_param=100):
     """Select a child node using the UCT formula."""
     best_value = -float('inf')
     best_node = None
@@ -171,13 +171,13 @@ def rollout_policy(state, visited, depth, horizon, gamma, GP_uncertainty, u_min,
     
     # Apply bonus for the highest slope location if it hasn't been visited globally.
     if (new_idx == highest_idx) and (highest_idx not in global_known_set):
-        reward_highest = 1000.0
+        reward_highest = 100.0
     else:
         reward_highest = 0.0
 
     # Apply bonus for the lowest slope location if it hasn't been visited globally.
     if (new_idx == lowest_idx) and (lowest_idx not in global_known_set):
-        reward_lowest = 1000.0
+        reward_lowest = 100.0
     else:
         reward_lowest = 0.0
 
